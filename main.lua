@@ -50,7 +50,7 @@ weblit.app
         childprocess.exec(string.format(
             'espeak -v "%s" "%s" --stdout >> tmp/%s',
             voiceName,
-            text:lower():gsub('_', ' '):gsub(';', '\\;'):gsub('"', '\\"'),
+            text:lower():gsub('_', ' '):gsub(';', ''):gsub('"', ''),
             id .. '.wav'
         ))
         os.execute('sleep 0.3') -- hey, dont judge
