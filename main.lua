@@ -3,6 +3,8 @@ local childprocess = require('childprocess')
 local fs = require('fs')
 local uv = require('uv')
 
+fs.mkdirSync('./tmp/')
+
 weblit.app
     .bind({
         host = '0.0.0.0',
@@ -39,13 +41,14 @@ weblit.app
         local id = uv.now()
         
         childprocess.exec(string.format(
-            'espeak "%s" --stdout >> %s',
+            'espeak "%s" --stdout >> tmp/%s',
             text:gsub(';', '\\;'):gsub('"', '\\"'),
             id .. '.wav'
         ))
         os.execute('sleep 0.3') -- hey, dont judge
-        local data = fs.readFileSync('./' .. id .. '.wav')
-
+        local data = fs.readFileSync('./tmp/' .. id .. '.wav')
+        fs.unlinkSync('./tmp/' .. id .. '.wav')
+        
         res.code = 200
         res.body = data
         res.headers['Content-Type'] = 'audio/wav'
