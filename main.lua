@@ -28,9 +28,15 @@ weblit.app
         path = '/tts/'
     }, function(req, res, go)
         local text = req.body
-
+        if not text then
+            res.code = 400
+            res.body = 'fuck you'
+            res.headers['Content-Type'] = 'text/plain'
+            
+            return go()
+        end
+        
         local id = uv.now()
-        local data
         
         childprocess.exec(string.format(
             'espeak "%s" --stdout >> %s',
@@ -38,8 +44,7 @@ weblit.app
             id .. '.wav'
         ))
         os.execute('sleep 0.3') -- hey, dont judge
-
-        data = fs.readFileSync('./' .. id .. '.wav')
+        local data = fs.readFileSync('./' .. id .. '.wav')
 
         res.code = 200
         res.body = data
