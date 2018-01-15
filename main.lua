@@ -2,6 +2,7 @@ local weblit = require('weblit')
 local childprocess = require('childprocess')
 local fs = require('fs')
 local uv = require('uv')
+local voice_list = require('voice_list')
 
 fs.mkdirSync('./tmp/')
 
@@ -14,6 +15,11 @@ weblit.app
     .use(weblit.logger)
     .use(weblit.autoHeaders)
     .use(weblit.eTagCache)
+    .use(function(_, res, go)
+        if res.code == 404 then
+            return go()
+        end
+    end)
 
     .route({
         path = '/'
@@ -27,9 +33,10 @@ weblit.app
 
     .route({
         method = 'POST',
-        path = '/tts/'
+        path = '/tts/:voiceName:'
     }, function(req, res, go)
         local text = req.body
+        local voiceName = voice_list[req.params.voiceName] and req.params.voiceName or 'boris'
         if not text then
             res.code = 400
             res.body = 'fuck you'
@@ -41,7 +48,8 @@ weblit.app
         local id = uv.now()
         
         childprocess.exec(string.format(
-            'espeak "%s" --stdout >> tmp/%s',
+            'espeak -v "%s" "%s" --stdout >> tmp/%s',
+            voiceName,
             text:lower():gsub('_', ' '):gsub(';', '\\;'):gsub('"', '\\"'),
             id .. '.wav'
         ))
