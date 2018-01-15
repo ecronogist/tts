@@ -37,7 +37,7 @@ weblit.app
             text:gsub(';', '\\;'):gsub('"', '\\"'),
             id .. '.wav'
         ))
-        os.execute('sleep 0.3')
+        os.execute('sleep 0.3') -- hey, dont judge
 
         data = fs.readFileSync('./' .. id .. '.wav')
 
