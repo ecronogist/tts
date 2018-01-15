@@ -32,11 +32,11 @@ weblit.app
     end)
 
     .route({
-        method = 'POST',
-        path = '/tts/:voiceName:'
+        method = 'GET',
+        path = '/tts/'
     }, function(req, res, go)
-        local text = req.body
-        local voiceName = voice_list[req.params.voiceName] and req.params.voiceName or 'boris'
+        local text = req.query.text
+        local voiceName = voice_list[req.query.voiceName] and req.query.voiceName or 'boris'
         if not text then
             res.code = 400
             res.body = 'fuck you'
