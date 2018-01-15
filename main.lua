@@ -42,7 +42,7 @@ weblit.app
         
         childprocess.exec(string.format(
             'espeak "%s" --stdout >> tmp/%s',
-            text:gsub(';', '\\;'):gsub('"', '\\"'),
+            text:lower():gsub('_', ' '):gsub(';', '\\;'):gsub('"', '\\"'),
             id .. '.wav'
         ))
         os.execute('sleep 0.3') -- hey, dont judge
