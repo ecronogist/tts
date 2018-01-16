@@ -16,7 +16,10 @@ weblit.app
     .use(weblit.autoHeaders)
     .use(weblit.eTagCache)
     .use(function(_, res, go)
-        if res.code == 404 then
+        if res.code ~= 200 then
+            res.body = res.code .. '. That\'s an error.'
+            res.headers['Content-Type'] = 'text/plain'
+
             return go()
         end
     end)
@@ -25,8 +28,6 @@ weblit.app
         path = '/'
     }, function(req, res, go)
         res.code = 403
-        res.body = 'fuck you'
-        res.headers['Content-Type'] = 'text/plain'
 
         return go()
     end)
@@ -35,12 +36,12 @@ weblit.app
         method = 'GET',
         path = '/tts/'
     }, function(req, res, go)
-        local text = req.query.text
-        local voiceName = voice_list[req.query.voiceName] and req.query.voiceName or 'boris'
+        local text = req.query and req.query.text
+        local voiceName = req.query and voice_list[req.query.voiceName] and req.query.voiceName or 'boris'
         if not text then
             res.code = 400
-            res.body = 'fuck you'
-            res.headers['Content-Type'] = 'text/plain'
+            res.body = ''
+            res.headers['Content-Type'] = 'audio/wav'
             
             return go()
         end
