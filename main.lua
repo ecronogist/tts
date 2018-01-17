@@ -55,7 +55,7 @@ weblit.app
             id .. '.wav'
         ))
         os.execute('sleep 0.3') -- hey, dont judge
-        local data = fs.readFileSync('./tmp/' .. id .. '.wav')
+        local data = fs.readFileSync('./tmp/' .. id .. '.wav') -- i will judge dont worry
         fs.unlinkSync('./tmp/' .. id .. '.wav')
         
         res.code = 200
